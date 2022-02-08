@@ -41,7 +41,7 @@ public class Main {
 		
 		
 		boolean complete = false;		
-		while(!complete) {
+		//while(!complete) {
 			// Grab the first set's parent to compare to others
 			int holder = mazeSet.parent[0];
 			
@@ -58,12 +58,25 @@ public class Main {
 			}
 			
 			// Select a cell by coordinates
-			int selectedCoords[] = selectCell(mazeSize);
+			int selectedCoords[] = selectCell(mazeSize - 1);
+
+			System.out.println();
 			// Find a neighbor cell from selection
-			int neighborCoords[] = findValidNeighbor(selectedCoords, mazeSize);
+			int neighborCoords[] = findValidNeighbor(selectedCoords, mazeSize - 1);
+			for(int i = 0; i < 4; i++) {
+				System.out.print(neighborCoords[i]);
+			}
+			
+			System.out.println();
+			
+			for(int i = 0; i < 4; i++) {
+				System.out.print(selectedCoords[i]);
+			}
 			//Grab ID values of selected cell
 			int selectedID = maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].getID();
 			int neighborID = maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].getID();
+			
+			System.out.println("\n" + selectedID + " " + neighborID);
 			
 			// Checks to see if these cells are a valid union
 			if(!(mazeSet.unionSets(selectedID, neighborID))) {
@@ -73,7 +86,7 @@ public class Main {
 				// Valid, smash walls
 				
 			}
-		}
+		//}
  		
 	}
 	
@@ -91,9 +104,14 @@ public class Main {
 	}
 	
 	// Function to randomly select a valid neighbor given a current position
-	public static int[] findValidNeighbor(int coords[], int max) {
+	public static int[] findValidNeighbor(int selectedCoords[], int max) {
 		int index = ThreadLocalRandom.current().nextInt(0, 3+1);
-		
+		// Create a new array to avoid changing selected coord value
+		int[] coords = new int[selectedCoords.length];
+		// Populate new array with old elements
+		for(int i = 0; i < coords.length; i++) {
+			coords[i] = selectedCoords[i];
+		}
 		// Ensure no out of bounds
 		if(coords[index] - 1 < 0 || coords[index] + 1 > max - 1) {
 			// An operation will be out of bounds. Attempt the opposite
