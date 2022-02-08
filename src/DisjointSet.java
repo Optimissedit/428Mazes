@@ -1,9 +1,9 @@
 
 // Class to create a disjoint set data structure to more easily track set operations
+// Index represents cells unique ID, value at index shows what set it is currently in
 public class DisjointSet {
 	
-	// Properties to control tree structure 
-	int[] rank;
+	// Array to hold parent of sets
 	int[] parent;
 	// Number of cells in the maze
 	int cells;
@@ -11,9 +11,8 @@ public class DisjointSet {
 	// Constructor
 	public DisjointSet(int c) {
 		cells = c;
-		rank = new int [c];
 		parent = new int [c];
-		// Call function to create singleton sets for all cells
+		// Call function to fill indexes with corresponding values (index[0] = 0... etc)
 		makeSets();
 	}
 	
@@ -34,6 +33,7 @@ public class DisjointSet {
 		}
 		else
 		{
+			System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
 			// Given integer is not the parent, recursively check c's parent until found
 			return findParent(parent[c]);
 		}
@@ -47,8 +47,15 @@ public class DisjointSet {
 		int parent0 = findParent(c0);
 		int parent1 = findParent(c1);
 		
-		// Set parent of c0 to parent of c1 to move sets under same parent
-		parent[parent0] = parent1;
+		if(parent0 == parent1) {
+			// Both sets are already the same, no need to union
+			System.out.println("Cannot union identical sets");
+		}
+		else {
+			// Set parent of c0 to parent of c1 to move sets under same parent
+			parent[parent0] = parent1;
+		}
+
 	}
 	
 }
