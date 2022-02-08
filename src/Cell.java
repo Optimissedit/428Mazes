@@ -15,6 +15,11 @@ public class Cell {
 		counter++;
 	}
 	
+	// Getter for ID value
+	int getID() {
+		return id;
+	}
+	
 	void smashWall(int wall) {
 		// Check if this wall was already removed
 		if(walls[wall] == 0) {

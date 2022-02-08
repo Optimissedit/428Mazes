@@ -41,7 +41,7 @@ public class DisjointSet {
 	
 	
 	// Unions two sets into a new subset
-	void unionSets(int c0, int c1) {
+	boolean unionSets(int c0, int c1) {
 		
 		// find parent of each set
 		int parent0 = findParent(c0);
@@ -49,11 +49,12 @@ public class DisjointSet {
 		
 		if(parent0 == parent1) {
 			// Both sets are already the same, no need to union
-			System.out.println("Cannot union identical sets");
+			return false;
 		}
 		else {
 			// Set parent of c0 to parent of c1 to move sets under same parent
 			parent[parent0] = parent1;
+			return true;
 		}
 
 	}
