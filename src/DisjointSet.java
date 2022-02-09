@@ -33,7 +33,7 @@ public class DisjointSet {
 		}
 		else
 		{
-			System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
+			//System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
 			// Given integer is not the parent, recursively check c's parent until found
 			return findParent(parent[c]);
 		}
@@ -49,6 +49,7 @@ public class DisjointSet {
 		
 		if(parent0 == parent1) {
 			// Both sets are already the same, no need to union
+			System.out.println("Failed Union");
 			return false;
 		}
 		else {

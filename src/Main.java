@@ -39,45 +39,43 @@ public class Main {
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
+		mazeSet.unionSets(0, 1);
+		mazeSet.unionSets(1, 2);
+		mazeSet.unionSets(2, 0);
+		System.out.println(mazeSet.findParent(0));
 		
-		boolean complete = false;		
-		//while(!complete) {
+		
+		boolean complete = true;		
+		while(!complete) {
 			// Grab the first set's parent to compare to others
 			int holder = mazeSet.parent[0];
 			
+			// Boolean flag to mark whether all elements are part of the same set
+			boolean flag = true;
 			// Loop through all parents, ensuring sameness (all cells are reachable)
 			for(int i = 1; i < MAXSET; i++) {
 				// Cells not in the same set found, loop needs to continue
-				if(holder != mazeSet.parent[0]) {
+				if(holder != mazeSet.parent[i]) {
+					flag = false;
 					break;
 				}
-				else {
-					// All cells in the same set!
-					complete = true;
-				}
+			}
+			// If all cells are in the set, loop will end
+			if(flag) {
+				System.out.println("Flag flipped, loop ending");
+				complete = true;
 			}
 			
 			// Select a cell by coordinates
 			int selectedCoords[] = selectCell(mazeSize - 1);
 
-			System.out.println();
 			// Find a neighbor cell from selection
 			int neighborCoords[] = findValidNeighbor(selectedCoords, mazeSize - 1);
-			for(int i = 0; i < 4; i++) {
-				System.out.print(neighborCoords[i]);
-			}
-			
-			System.out.println();
-			
-			for(int i = 0; i < 4; i++) {
-				System.out.print(selectedCoords[i]);
-			}
+	
 			//Grab ID values of selected cell
 			int selectedID = maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].getID();
 			int neighborID = maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].getID();
-			
-			System.out.println("\n" + selectedID + " " + neighborID);
-			
+						
 			// Checks to see if these cells are a valid union
 			if(!(mazeSet.unionSets(selectedID, neighborID))) {
 				// Invalid, do not complete this merge and smash
@@ -85,8 +83,36 @@ public class Main {
 			else {
 				// Valid, smash walls
 				
+				for(int i = 0; i < mazeSize - 1; i++) {
+					// Find axis of walls
+					if(selectedCoords[i] != neighborCoords[i]) {
+						// Get bit position of this axis
+						int axisroot = i * 2;
+						
+						
+						if(selectedCoords[i] > neighborCoords[i]) {
+							// Neighbor is down one in same axis, bust negative for selected
+							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot);
+							// Neighbors wall is positive
+							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot + 1);
+						}
+						else {
+							// Neighbor is up one on same axis, bust positive
+							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot + 1);
+							// Neighbors wall is negative
+							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot);
+						}
+					}
+				}
 			}
-		//}
+			//System.out.println("Neighbor ID = " + neighborID);
+			//System.out.println("Parent of selected = " + mazeSet.findParent(selectedID));
+			//System.out.println(maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].toString());
+			//System.out.println(maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].toString());
+			
+		}
+		
+		
  		
 	}
 	
