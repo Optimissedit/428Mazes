@@ -20,7 +20,9 @@
 
 import java.lang.Math;
 import java.util.concurrent.ThreadLocalRandom;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
 
@@ -39,23 +41,19 @@ public class Main {
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
-		mazeSet.unionSets(0, 1);
-		mazeSet.unionSets(1, 2);
-		mazeSet.unionSets(2, 0);
-		System.out.println(mazeSet.findParent(0));
 		
 		
-		boolean complete = true;		
+		boolean complete = false;		
 		while(!complete) {
 			// Grab the first set's parent to compare to others
-			int holder = mazeSet.parent[0];
+			int holder = mazeSet.findParent(0);
 			
 			// Boolean flag to mark whether all elements are part of the same set
 			boolean flag = true;
 			// Loop through all parents, ensuring sameness (all cells are reachable)
-			for(int i = 1; i < MAXSET; i++) {
+			for(int i = 0; i < MAXSET; i++) {
 				// Cells not in the same set found, loop needs to continue
-				if(holder != mazeSet.parent[i]) {
+				if(holder != mazeSet.findParent(i)) {
 					flag = false;
 					break;
 				}
@@ -83,7 +81,7 @@ public class Main {
 			else {
 				// Valid, smash walls
 				
-				for(int i = 0; i < mazeSize - 1; i++) {
+				for(int i = 0; i < 4; i++) {
 					// Find axis of walls
 					if(selectedCoords[i] != neighborCoords[i]) {
 						// Get bit position of this axis
@@ -111,8 +109,34 @@ public class Main {
 			//System.out.println(maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].toString());
 			
 		}
-		
-		
+		// Decode
+		try {
+			File output = new File("maze.txt");
+			if(output.createNewFile()) {
+				System.out.println("File successfully created.");
+			}
+			else {
+				// File already exists, do nothing
+			}
+			
+			FileWriter writer = new FileWriter(output);
+			
+			for(int x = 0; x < mazeSize; x++) {
+				for(int y = 0; y < mazeSize; y++) {
+					for(int z = 0; z < mazeSize; z++) {
+						for(int t = 0; t < mazeSize; t++) {
+							writer.write(maze[x][y][z][t].toString());
+						}
+					}
+				}
+			}
+			writer.close();
+			
+		}
+		catch(IOException err) {
+			//Error handling
+			err.printStackTrace();
+		}
  		
 	}
 	

@@ -49,7 +49,6 @@ public class DisjointSet {
 		
 		if(parent0 == parent1) {
 			// Both sets are already the same, no need to union
-			System.out.println("Failed Union");
 			return false;
 		}
 		else {
