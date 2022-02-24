@@ -1,22 +1,13 @@
-// Creating a 4d Maze
-// Create a 4D array, give each cell a unique number (i.e 123456...)
-// Create set operations (create set, merge sets, search sets)
-// Randomly select a cell by integer
-// Check its neighbors for valid walls by coordinate
-// Ensure merging new cell won't create a loop (would be comparing two sets of same elements)
-// Merge new cell with other cell or set of cells
-
-// Decoding the maze
-// Starting with 'completed' set of cells, determine each axis of motion
-// I.E check both positions of X axis and get their integer. Check final set for those integers. If found, there is no wall between the cells.
-// Print cell bits to file as generated, once done with whole set file will be complete
-
-
-// Alternative method: 
-// Disjoint Set of 'cell' objects
-// when doing unions, adjust 'bits' variable to ensure correct 'walls'
-// Ignore unions after all 'cells' in one set, simply print all cells 'bits' in order
-
+// Algorithm:
+/*
+ *First, create a randomized stack of indexes. This will randomly select every index one time.
+ *With the selected index, find a valid neighbor of the cell. Do not pass unless every neighbor is invalid
+ *Break down walls with valid neighbor
+ *Update cell information accordingly
+ *Repeat with all indexes
+ * -- If All cells are still not in the same set, repeat the process.
+ * Once all cells are in the same set, print the resulting bits 
+ */
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -44,18 +35,59 @@ public class Main {
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(mazeSize);
 		
-		for(int i = 0; i < MAXSET; i++) {
-			int[] set = mazeSet.cellList[i].getCoords();
-			for(int j = 0; j < set.length; j++) {
-				System.out.print(set[j]);
+		// Create main algorithm loop
+		boolean finished = false;
+		while(!finished) {
+
+			// Check to ensure we have more indexes to check 
+			if(indexStack.size() < 1) {
+							
+				// Check to see if all cells exist in one set
+				int holder = mazeSet.findParent(0);
+				
+				boolean exit = true;
+				// Loop to check if all elements exist in same set (same parent)
+				for(int i = 0; i < MAXSET; i++) {
+					if(holder != mazeSet.findParent(i)) {
+						// Not all in same set, continue breaking walls
+						exit = false;
+						break;
+					}
+				}
+				
+				if(exit) {
+					// All cells are in the same set! Loop is done
+					System.out.println("All cells in set, loop completed");
+					finished = true;
+				}
+				else {
+					//TODO: Ensure this doesn't cause any issues with shallow copies, etc.
+					// More walls need to be broken. More indexes are needed.
+					System.out.println("Refillin' the index list, boss!");
+					indexStack = fillIndexes(MAXSET);
+				}	
 			}
-			System.out.println(" - Coords for Cell # " + i);
+			
+			// End condition checking over
+			
+			// Grab an index for a Cell
+			int currIndex = indexStack.pop();
+			// Grab the coordinates for that index
+			int[] x = mazeSet.cellList[currIndex].getCoords();
+			
+			// Create a true copy of coords to avoid issues
+			int[] currCoords = new int[4];
+			for(int i = 0; i < x.length; i++) {
+				currCoords[i] = x[i];
+			}
+
+			// TODO: consider changing how this function operates. Checking all valid options would be better.
+			int [] neighborCoords = findValidNeighbor(currCoords, mazeSize);
+
+
 		}
  		
-		mazeSet.unionSets(0, 1);
-		mazeSet.unionSets(1, 4);
-		mazeSet.unionSets(3, 1);
-		System.out.println("The parent of Cell 0 is " + mazeSet.cellList[0].getParent());
+	
 		
 	}
 	

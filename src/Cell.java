@@ -48,7 +48,7 @@ public class Cell {
 		return coords;
 	}
 	
-	// Getter for ID value
+	// Getter for parent's value
 	int getParent() {
 		return parent;
 	}
