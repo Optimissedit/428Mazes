@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 // Class to create a disjoint set data structure to more easily track set operations
 // Index represents cells unique ID, value at index shows what set it is currently in
@@ -50,6 +51,23 @@ public class DisjointSet {
 			// Given integer is not the parent, recursively check c's parent until found
 			return findParent(cellList[c].getParent());
 		}
+	}
+	
+	// Function to find a cell based on its given coordinates
+	int findCell(int[] x) {
+		// Temp variable to compare given coords to
+		int[] holder;
+		boolean failed = false;
+		
+		for(int i = 0; i < (int) Math.pow(mazeSize, 4); i++) {
+			holder = cellList[i].getCoords();
+			
+			if(Arrays.equals(x, holder)) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 	
 	
