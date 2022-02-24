@@ -5,26 +5,59 @@ public class Cell {
 	// Static counter gives each new cell a unique ID
 	static int counter = 0;
 	// Variable to hold ID
-	int id;
+	int parent;
+	// Variable to represent a cell's coordinates
+	int[] coords;
 	// Characters to represent degrees of freedom in this cell (char[0] == X-, char[1] == X+, ETC.)
 	int[] walls = {1,1,1,1,1,1,1,1};
 	
 	// Default constructor
 	public Cell() {
-		id = counter;
+		parent = counter;
 		counter++;
+		coords = new int[4];
+	}
+	
+	// Constructor to accept coordinates for the new cell
+	public Cell(int[] x) {
+		parent = counter;
+		counter++;
+		coords = new int[4];
+		// Loop through given coords and change each element in original coords
+		for(int i = 0; i < 4; i++) {
+			coords[i] = x[i];
+		}
+	}
+	
+	// Function to change what index this cell points to as its parent
+	void setParent(int x) {
+		parent = x;
+	}
+	
+	
+	// Function to set Cell's coordinates. Should only be used with arrays of length 4
+	void setCoords(int[] x) {
+		// Loop through given coords and change each element in original coords
+		for(int i = 0; i < 4; i++) {
+			coords[i] = x[i];
+		}
+	}
+	
+	// Getter for coords
+	int[] getCoords() {
+		return coords;
 	}
 	
 	// Getter for ID value
-	int getID() {
-		return id;
+	int getParent() {
+		return parent;
 	}
 	
 	void smashWall(int wall) {
 		// Check if this wall was already removed
 		if(walls[wall] == 0) {
 			// Invalid smash, do nothing
-			System.out.println("Already smashed this wall in cell " + id);
+			System.out.println("Already smashed this wall in cell ");
 		}
 		else {
 			walls[wall] -= 1;

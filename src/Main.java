@@ -19,6 +19,9 @@
 
 
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
 import java.io.FileWriter;
@@ -35,109 +38,48 @@ public class Main {
 	    int MAXSET = (int) Math.pow(mazeSize, 4);
 	    //System.out.println(MAXSET);
 	    
-		// Create 4d Array of cells to hold cell objects
-		Cell maze[][][][] = populateStart(mazeSize);
-		
+	    // Create a stack of randomized cell indexes
+	    Stack<Integer> indexStack = fillIndexes(MAXSET);
+	    
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
-		DisjointSet mazeSet = new DisjointSet(MAXSET);
+		DisjointSet mazeSet = new DisjointSet(mazeSize);
 		
-		
-		
-		boolean complete = false;		
-		while(!complete) {
-			// Grab the first set's parent to compare to others
-			int holder = mazeSet.findParent(0);
-			
-			// Boolean flag to mark whether all elements are part of the same set
-			boolean flag = true;
-			// Loop through all parents, ensuring sameness (all cells are reachable)
-			for(int i = 0; i < MAXSET; i++) {
-				// Cells not in the same set found, loop needs to continue
-				if(holder != mazeSet.findParent(i)) {
-					flag = false;
-					break;
-				}
+		for(int i = 0; i < MAXSET; i++) {
+			int[] set = mazeSet.cellList[i].getCoords();
+			for(int j = 0; j < set.length; j++) {
+				System.out.print(set[j]);
 			}
-			// If all cells are in the set, loop will end
-			if(flag) {
-				System.out.println("Flag flipped, loop ending");
-				complete = true;
-			}
-			
-			// Select a cell by coordinates
-			int selectedCoords[] = selectCell(mazeSize - 1);
-
-			// Find a neighbor cell from selection
-			int neighborCoords[] = findValidNeighbor(selectedCoords, mazeSize - 1);
-	
-			//Grab ID values of selected cell
-			int selectedID = maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].getID();
-			int neighborID = maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].getID();
-						
-			// Checks to see if these cells are a valid union
-			if(!(mazeSet.unionSets(selectedID, neighborID))) {
-				// Invalid, do not complete this merge and smash
-			}
-			else {
-				// Valid, smash walls
-				
-				for(int i = 0; i < 4; i++) {
-					// Find axis of walls
-					if(selectedCoords[i] != neighborCoords[i]) {
-						// Get bit position of this axis
-						int axisroot = i * 2;
-						
-						
-						if(selectedCoords[i] > neighborCoords[i]) {
-							// Neighbor is down one in same axis, bust negative for selected
-							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot);
-							// Neighbors wall is positive
-							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot + 1);
-						}
-						else {
-							// Neighbor is up one on same axis, bust positive
-							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot + 1);
-							// Neighbors wall is negative
-							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot);
-						}
-					}
-				}
-			}
-			//System.out.println("Neighbor ID = " + neighborID);
-			//System.out.println("Parent of selected = " + mazeSet.findParent(selectedID));
-			//System.out.println(maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].toString());
-			//System.out.println(maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].toString());
-			
-		}
-		// Decode
-		try {
-			File output = new File("maze.txt");
-			if(output.createNewFile()) {
-				System.out.println("File successfully created.");
-			}
-			else {
-				// File already exists, do nothing
-			}
-			
-			FileWriter writer = new FileWriter(output);
-			
-			for(int x = 0; x < mazeSize; x++) {
-				for(int y = 0; y < mazeSize; y++) {
-					for(int z = 0; z < mazeSize; z++) {
-						for(int t = 0; t < mazeSize; t++) {
-							writer.write(maze[x][y][z][t].toString());
-						}
-					}
-				}
-			}
-			writer.close();
-			
-		}
-		catch(IOException err) {
-			//Error handling
-			err.printStackTrace();
+			System.out.println(" - Coords for Cell # " + i);
 		}
  		
+		mazeSet.unionSets(0, 1);
+		mazeSet.unionSets(1, 4);
+		mazeSet.unionSets(3, 1);
+		System.out.println("The parent of Cell 0 is " + mazeSet.cellList[0].getParent());
+		
+	}
+	
+	// Function to create a stack of randomized cell indexes
+	public static Stack<Integer> fillIndexes(int max) {
+		
+		// Create an array list to hold all indexes of cells
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		// Populate list with cell indexes
+		for(int i = 0; i < max; i++) {
+			list.add(i);
+		}
+		
+		// Shuffle list to create random order
+		Collections.shuffle(list);
+		
+		// Create a new stack and fill it with the shuffled indexes
+		Stack<Integer> stack = new Stack<Integer>();
+		for(int i = 0; i < max; i++) {
+			stack.add(list.get(i));
+		}
+		
+		return stack;
 	}
 	
 	// Function to select a random set of coordinates to any cell
