@@ -92,16 +92,16 @@ public class Main {
 						for(int i = 0; i < 4; i++) {
 							if(currCoords[i] != neighborCoords[i]) {
 								// Found dimension of broken wall
-								int wall = i * 2;
+								int wallRoot = i * 2;
 								if(currCoords[i] > neighborCoords[i]) {
 									// Wall broken is in the negative direction of this dimension for selected cell
-									mazeSet.cellList[currIndex].smashWall(wall);
-									mazeSet.cellList[neighborIndex].smashWall(wall + 1);
+									mazeSet.cellList[currIndex].smashWall(wallRoot);
+									mazeSet.cellList[neighborIndex].smashWall(wallRoot + 1);
 								}
 								else {
-									// Wall broken is in the positive direction of this dimension for selected
-									mazeSet.cellList[currIndex].smashWall(wall + 1);
-									mazeSet.cellList[neighborIndex].smashWall(wall);
+									// wallRoot broken is in the positive direction of this dimension for selected
+									mazeSet.cellList[currIndex].smashWall(wallRoot + 1);
+									mazeSet.cellList[neighborIndex].smashWall(wallRoot);
 								}
 							}
 						}
@@ -174,107 +174,32 @@ public class Main {
 	
 	// Function to randomly select a valid neighbor given a current position
 	public static int[] findValidNeighbor(int selectedCoords[], int max) {
-		// Create arraylist to shuffle data in
-		ArrayList<Integer> list = new ArrayList<Integer>(Arrays.asList(0,1,2,3));
-		// Shuffle list
-		Collections.shuffle(list);
-		// Create a new stack and fill it with the shuffled indexes
-		Stack<Integer> stack = new Stack<Integer>();
-		for(int i = 0; i < 4; i++) {
-			stack.add(list.get(i));
+		int index = ThreadLocalRandom.current().nextInt(0, 3+1);
+		// Create a new array to avoid changing selected coord value
+		int[] coords = new int[selectedCoords.length];
+		// Populate new array with old elements
+		for(int i = 0; i < coords.length; i++) {
+			coords[i] = selectedCoords[i];
 		}
-		
-		// Create an array to change and pass back at function end
-		int[] result = new int[4];
-		for(int i = 0; i < 4; i++) {
-			result[i] = selectedCoords[i];
-		}
-		
-		// Loop to check all possible axis in a random order for a valid neighbor
-		// Dimensions = (x,y,z,t) = (0,1,2,3)
-		boolean complete = false;
-		while(!complete) {
-			// Create variable to hold what dimension is being checked
-			int dimension = 0;
-			// If stack is exhausted, no valid moves. Mark result[0] -1 to signify
-			if(stack.isEmpty()) {
-				complete = true;
-				result[0] = -1;
+		// Ensure no out of bounds
+		if(coords[index] - 1 < 0 || coords[index] + 1 > max - 1) {
+			// An operation will be out of bounds. Attempt the opposite
+			if(!(coords[index] - 1 < 0)) {
+				// Able to subtract
+				coords[index] = coords[index] - 1;
+				return coords;
 			}
 			else {
-				// Grab an int off the stack
-				dimension = stack.pop();
+				// Since subtracting is invalid, addition must be possible
+				coords[index] = coords[index] + 1;
+				return coords;
 			}
-
-			// Assess checking for a neighbor in + or - direction of dimension
-			switch(dimension) {
-				case 0:
-					if(selectedCoords[0] > 0 && selectedCoords[0] < max) {
-						// Valid to either increment or decrement
-						result[0] = result[0] + coinFlip();
-						complete = true;
-					}
-					else if(selectedCoords[0] <= 0) {
-						// Too low to decrement, would open to outside
-						result[0] = result[0] + 1;
-					}
-					else {
-						// Too high to increment, would open to outside
-						result[0] = result[0] - 1;
-					}
-					break;
-				case 1:
-					if(selectedCoords[1] > 0 && selectedCoords[1] < max) {
-						// Valid to either increment or decrement
-						result[1] = result[1] + coinFlip();
-						complete = true;
-					}
-					else if(selectedCoords[1] <= 0) {
-						// Too low to decrement, would open to outside
-						result[1] = result[1] + 1;
-					}
-					else {
-						// Too high to increment, would open to outside
-						result[1] = result[1] - 1;
-					}
-					break;
-				case 2: 
-					if(selectedCoords[2] > 0 && selectedCoords[2] < max) {
-						// Valid to either increment or decrement
-						result[2] = result[2] + coinFlip();
-						complete = true;
-					}
-					else if(selectedCoords[2] <= 0) {
-						// Too low to decrement, would open to outside
-						result[2] = result[2] + 1;
-					}
-					else {
-						// Too high to increment, would open to outside
-						result[2] = result[2] - 1;
-					}
-					break;
-				case 3:
-					if(selectedCoords[3] > 0 && selectedCoords[3] < max) {
-						// Valid to either increment or decrement
-						result[3] = result[3] + coinFlip();
-						complete = true;
-					}
-					else if(selectedCoords[3] <= 0) {
-						// Too low to decrement, would open to outside
-						result[3] = result[3] + 1;
-					}
-					else {
-						// Too high to increment, would open to outside
-						result[3] = result[3] - 1;
-					}
-					break;
-				default:
-					System.out.println("default case of switch in findValidNeighbor function???");
-					break;
-			}
-			
 		}
-		return result;
+		else {
+			// Add or subtract 1 to the coordinates to grab a neighbors coords
+			coords[index] = coords[index] + coinFlip();
+			return coords;
+		}
 		
 	}
 	
