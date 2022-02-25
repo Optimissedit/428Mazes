@@ -81,35 +81,33 @@ public class Main {
 				for(int i = 0; i < x.length; i++) {
 					currCoords[i] = x[i];
 				}
-
-				int [] neighborCoords = findValidNeighbor(currCoords, mazeSize);
 				
+				int [] neighborCoords = findValidNeighbor(currCoords, mazeSize - 1);
+
 				// Index of neighboring cell
 				int neighborIndex = mazeSet.findCell(neighborCoords);
-				// Ensure coordinates are found
-				if(neighborIndex != -1) {
-					// TODO: Change unionsets to a check
-					// If The merge fails, we can just skip and not check wall break
-					mazeSet.unionSets(currIndex, neighborIndex);
-					
-					// Loop through coordinates to find where they differ
-					for(int i = 0; i < 4; i++) {
-						if(currCoords[i] != neighborCoords[i]) {
-							// Found dimension of broken wall
-							int wall = i * 2;
-							if(currCoords[i] > neighborCoords[i]) {
-								// Wall broken is in the negative direction of this dimension for selected cell
-								mazeSet.cellList[currIndex].smashWall(wall);
-								mazeSet.cellList[neighborIndex].smashWall(wall + 1);
-							}
-							else {
-								// Wall broken is in the positive direction of this dimension for selected
-								mazeSet.cellList[currIndex].smashWall(wall + 1);
-								mazeSet.cellList[neighborIndex].smashWall(wall);
+
+					if(mazeSet.unionSets(currIndex, neighborIndex)) {
+						// Loop through coordinates to find where they differ
+						for(int i = 0; i < 4; i++) {
+							if(currCoords[i] != neighborCoords[i]) {
+								// Found dimension of broken wall
+								int wall = i * 2;
+								if(currCoords[i] > neighborCoords[i]) {
+									// Wall broken is in the negative direction of this dimension for selected cell
+									mazeSet.cellList[currIndex].smashWall(wall);
+									mazeSet.cellList[neighborIndex].smashWall(wall + 1);
+								}
+								else {
+									// Wall broken is in the positive direction of this dimension for selected
+									mazeSet.cellList[currIndex].smashWall(wall + 1);
+									mazeSet.cellList[neighborIndex].smashWall(wall);
+								}
 							}
 						}
+					} else {
+						//System.out.println("Union would create a cycle.");
 					}
-				} 
 			}
 		}
 		// Exited main program loop. Write to file.
@@ -123,7 +121,9 @@ public class Main {
 			}
 			
 			FileWriter writer = new FileWriter(output);
+			int[] counter = {0,0,0,0}; 
 			for(int i = 0; i < MAXSET; i++) {
+
 				writer.write(mazeSet.cellList[i].toString());
 				}
 			writer.close();
@@ -135,11 +135,6 @@ public class Main {
 		}
 	}
 	
-	
-	public static void breakWall(int s, int n, int[] selected, int[] neighbor) {
-		
-
-	}
 	
 	// Function to create a stack of randomized cell indexes
 	public static Stack<Integer> fillIndexes(int max) {

@@ -4,6 +4,7 @@ public class Cell {
 	
 	// Static counter gives each new cell a unique ID
 	static int counter = 0;
+	static int counter2 = 0;
 	// Variable to hold ID
 	int parent;
 	// Variable to represent a cell's coordinates
@@ -60,7 +61,7 @@ public class Cell {
 			//System.out.println("Already smashed this wall in cell ");
 		}
 		else {
-			walls[wall] -= 1;
+			walls[wall] = 0;
 		}
 	}
 	
@@ -69,7 +70,8 @@ public class Cell {
 		// Create a string from the walls array, removing unneeded characters
 		String result = Arrays.toString(walls).replaceAll("\\]|\\[|,|\\s", "");
 		String result1 = Arrays.toString(coords).replaceAll("\\]|\\[|,|\\s", "");
-		System.out.println(result + " -- " + result1);
+		System.out.println(result + " -- " + result1 + " - " + counter2);
+		counter2++;
 		return result;
 	}
 	

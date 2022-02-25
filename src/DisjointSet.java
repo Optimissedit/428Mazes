@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 // Class to create a disjoint set data structure to more easily track set operations
 // Index represents cells unique ID, value at index shows what set it is currently in
@@ -54,7 +53,8 @@ public class DisjointSet {
 	
 	// Function to find a cell based on its given coordinates
 	int findCell(int[] x) {
-		int result = x[0] + (x[1] * 3) + (x[2] * 9) + (x[3] * 27);
+		// Index can be found with x(N^0) + y(N^1) + z(N^2) + t(N^3)
+		int result = x[0] + (x[1] * mazeSize) + (x[2] * (int) Math.pow(mazeSize, 2)) + (x[3] * (int) Math.pow(mazeSize, 3));
 		return result;
 	}
 	
@@ -68,6 +68,7 @@ public class DisjointSet {
 		int parent1 = findParent(c1);
 		
 		if(parent0 == parent1) {
+			
 			// Both sets are already the same, no need to union
 			return false;
 		}
