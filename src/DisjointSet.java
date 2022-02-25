@@ -54,19 +54,21 @@ public class DisjointSet {
 	}
 	
 	// Function to find a cell based on its given coordinates
+	// TODO: Find out why this is failing to find coords
 	int findCell(int[] x) {
 		// Temp variable to compare given coords to
-		int[] holder;
+		int[] holder = new int[4];
 		boolean failed = false;
 		
 		for(int i = 0; i < (int) Math.pow(mazeSize, 4); i++) {
 			holder = cellList[i].getCoords();
 			
 			if(Arrays.equals(x, holder)) {
+				//System.out.println("Found coordinates! :)");
 				return i;
 			}
 		}
-		
+		System.out.println("Failed to find coords");
 		return -1;
 	}
 	

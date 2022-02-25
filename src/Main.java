@@ -68,32 +68,77 @@ public class Main {
 					indexStack = fillIndexes(MAXSET);
 				}	
 			}
-			
-			// End condition checking over
-			
-			// Grab an index for a Cell
-			int currIndex = indexStack.pop();
-			// Grab the coordinates for that index
-			int[] x = mazeSet.cellList[currIndex].getCoords();
-			
-			// Create a true copy of coords to avoid issues
-			int[] currCoords = new int[4];
-			for(int i = 0; i < x.length; i++) {
-				currCoords[i] = x[i];
+			else {
+				// End condition checking over
+				
+				// Grab an index for a Cell
+				int currIndex = indexStack.pop();
+				// Grab the coordinates for that index
+				int[] x = mazeSet.cellList[currIndex].getCoords();
+				
+				// Create a true copy of coords to avoid issues
+				int[] currCoords = new int[4];
+				for(int i = 0; i < x.length; i++) {
+					currCoords[i] = x[i];
+				}
+
+				int [] neighborCoords = findValidNeighbor(currCoords, mazeSize);
+				
+				// Index of neighboring cell
+				int neighborIndex = mazeSet.findCell(neighborCoords);
+				// Ensure coordinates are found
+				if(neighborIndex != -1) {
+					// TODO: Change unionsets to a check
+					// If The merge fails, we can just skip and not check wall break
+					mazeSet.unionSets(currIndex, neighborIndex);
+					
+					// Loop through coordinates to find where they differ
+					for(int i = 0; i < 4; i++) {
+						if(currCoords[i] != neighborCoords[i]) {
+							// Found dimension of broken wall
+							int wall = i * 2;
+							if(currCoords[i] > neighborCoords[i]) {
+								// Wall broken is in the negative direction of this dimension for selected cell
+								mazeSet.cellList[currIndex].smashWall(wall);
+								mazeSet.cellList[neighborIndex].smashWall(wall + 1);
+							}
+							else {
+								// Wall broken is in the positive direction of this dimension for selected
+								mazeSet.cellList[currIndex].smashWall(wall + 1);
+								mazeSet.cellList[neighborIndex].smashWall(wall);
+							}
+						}
+					}
+				} 
 			}
-
-			int [] neighborCoords = findValidNeighbor(currCoords, mazeSize);
-			// Index of neighboring cell
-			int neighborIndex = mazeSet.findCell(neighborCoords);
-			
-			// Break walls now.
-
-
-
 		}
- 		
+		// Exited main program loop. Write to file.
+		try {
+			File output = new File("maze.txt");
+			if(output.createNewFile()) {
+				System.out.println("File successfully created.");
+			}
+			else {
+				// File already exists, do nothing
+			}
+			
+			FileWriter writer = new FileWriter(output);
+			for(int i = 0; i < MAXSET; i++) {
+				writer.write(mazeSet.cellList[i].toString());
+				}
+			writer.close();
+			
+		}
+		catch(IOException err) {
+			//Error handling
+			err.printStackTrace();
+		}
+	}
 	
+	
+	public static void breakWall(int s, int n, int[] selected, int[] neighbor) {
 		
+
 	}
 	
 	// Function to create a stack of randomized cell indexes

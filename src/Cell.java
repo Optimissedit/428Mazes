@@ -57,7 +57,7 @@ public class Cell {
 		// Check if this wall was already removed
 		if(walls[wall] == 0) {
 			// Invalid smash, do nothing
-			System.out.println("Already smashed this wall in cell ");
+			//System.out.println("Already smashed this wall in cell ");
 		}
 		else {
 			walls[wall] -= 1;
