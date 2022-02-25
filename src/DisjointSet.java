@@ -19,13 +19,13 @@ public class DisjointSet {
 	
 	// Function to make singleton sets for all cells in the maze
 	void makeSets() {
-		for(int x = 0; x < mazeSize; x++) {
+		for(int t = 0; t < mazeSize; t++) {
 			
-			for(int y = 0; y < mazeSize; y++) {
+			for(int z = 0; z < mazeSize; z++) {
 				
-				for(int z = 0; z < mazeSize; z++) {
+				for(int y = 0; y < mazeSize; y++) {
 					
-					for(int t = 0; t < mazeSize; t++) {
+					for(int x = 0; x < mazeSize; x++) {
 						// Get coordinates from loops as an array
 						int[] pos = {x,y,z,t};
 						// Create a new cell at those coordinates
@@ -47,7 +47,6 @@ public class DisjointSet {
 		}
 		else
 		{
-			//System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
 			// Given integer is not the parent, recursively check c's parent until found
 			return findParent(cellList[c].getParent());
 		}

@@ -68,6 +68,8 @@ public class Cell {
 	public String toString() {
 		// Create a string from the walls array, removing unneeded characters
 		String result = Arrays.toString(walls).replaceAll("\\]|\\[|,|\\s", "");
+		String result1 = Arrays.toString(coords).replaceAll("\\]|\\[|,|\\s", "");
+		System.out.println(result + " -- " + result1);
 		return result;
 	}
 	
