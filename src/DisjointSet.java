@@ -18,13 +18,13 @@ public class DisjointSet {
 	
 	// Function to make singleton sets for all cells in the maze
 	void makeSets() {
-		for(int t = 0; t < mazeSize; t++) {
+		for(int x = 0; x < mazeSize; x++) {
 			
-			for(int z = 0; z < mazeSize; z++) {
+			for(int y = 0; y < mazeSize; y++) {
 				
-				for(int y = 0; y < mazeSize; y++) {
+				for(int z = 0; z < mazeSize; z++) {
 					
-					for(int x = 0; x < mazeSize; x++) {
+					for(int t = 0; t < mazeSize; t++) {
 						// Get coordinates from loops as an array
 						int[] pos = {x,y,z,t};
 						// Create a new cell at those coordinates

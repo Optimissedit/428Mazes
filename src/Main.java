@@ -13,6 +13,7 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
@@ -64,7 +65,7 @@ public class Main {
 				else {
 					//TODO: Ensure this doesn't cause any issues with shallow copies, etc.
 					// More walls need to be broken. More indexes are needed.
-					System.out.println("Refillin' the index list, boss!");
+					//System.out.println("Refillin' the index list, boss!");
 					indexStack = fillIndexes(MAXSET);
 				}	
 			}
@@ -110,6 +111,26 @@ public class Main {
 					}
 			}
 		}
+		// create a map of possible 4 bit binary
+		// Horrible brute force method of doing this
+		HashMap<Integer, Integer[]> m = new HashMap<Integer, Integer[]>();
+		m.put(0, new Integer[] {0,0,0,0});
+		m.put(1, new Integer[] {0,0,0,1});
+		m.put(2, new Integer[] {0,0,1,0});
+		m.put(3, new Integer[] {0,0,1,1});
+		m.put(4, new Integer[] {0,1,0,0});
+		m.put(5, new Integer[] {0,1,0,1});
+		m.put(6, new Integer[] {0,1,1,0});
+		m.put(7, new Integer[] {0,1,1,1});
+		m.put(8, new Integer[] {1,0,0,0});
+		m.put(9, new Integer[] {1,0,0,1});
+		m.put(10, new Integer[] {1,0,1,0});
+		m.put(11, new Integer[] {1,0,1,1});
+		m.put(12, new Integer[] {1,1,0,0});
+		m.put(13, new Integer[] {1,1,0,1});
+		m.put(14, new Integer[] {1,1,1,0});
+		m.put(15, new Integer[] {1,1,1,1});
+		
 		// Exited main program loop. Write to file.
 		try {
 			File output = new File("maze.txt");
@@ -118,14 +139,26 @@ public class Main {
 			}
 			else {
 				// File already exists, do nothing
+			}			
+			FileWriter writer = new FileWriter(output);
+			
+			for(int x = 0; x < mazeSize; x++) {
+				
+				for(int y = 0; y < mazeSize; y++) {
+					
+					for(int z = 0; z < mazeSize; z++) {
+						
+						for(int t = 0; t < mazeSize; t++) {
+							// Get coordinates from loops as an array
+							int[] pos = {x,y,z,t};
+							int result = mazeSet.findCell(pos);
+
+							writer.write(mazeSet.cellList[result].toString());
+						}
+					}
+				}
 			}
 			
-			FileWriter writer = new FileWriter(output);
-			int[] counter = {0,0,0,0}; 
-			for(int i = 0; i < MAXSET; i++) {
-
-				writer.write(mazeSet.cellList[i].toString());
-				}
 			writer.close();
 			
 		}
@@ -157,19 +190,6 @@ public class Main {
 		}
 		
 		return stack;
-	}
-	
-	// Function to select a random set of coordinates to any cell
-	public static int[] selectCell(int max) {
-		// Create an array to hold 4 random coords
-		int[] arr = new int[4];
-		
-		// Generate 4 random values between 0 and N-1 
-		for(int i = 0; i < 4; i++) {
-			arr[i] = ThreadLocalRandom.current().nextInt(0, max + 1);
-		}
-		// Return filled array to be used as coordinates
-		return arr;
 	}
 	
 	// Function to randomly select a valid neighbor given a current position
@@ -212,31 +232,6 @@ public class Main {
 		else {
 			return -1;
 		}
-	}
-	
-	// Function to return a 4d array where each cell contains a unique integer (increasing from 0)
-	public static Cell[][][][] populateStart(int size) {
-
-		// Create the 4d array
-		Cell maze[][][][] = new Cell[size][size][size][size];
-		
-		// [t][z][y][x] Coords, starting with t
-		for(int x = 0; x < size; x++) {
-			// Time loop
-			for(int y = 0; y < size;  y++) {
-				// Z coord loop
-				for(int z = 0; z < size; z++) {
-					// Y coord loop
-					for(int t = 0; t < size; t++) {
-						// Assign current cell a counter value
-						maze[x][y][z][t] = new Cell();
-					}
-				}
-			}
-		}
-		
-		return maze;
-		
 	}
 
 }
