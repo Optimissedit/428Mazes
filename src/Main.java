@@ -1,23 +1,3 @@
-// Creating a 4d Maze
-// Create a 4D array, give each cell a unique number (i.e 123456...)
-// Create set operations (create set, merge sets, search sets)
-// Randomly select a cell by integer
-// Check its neighbors for valid walls by coordinate
-// Ensure merging new cell won't create a loop (would be comparing two sets of same elements)
-// Merge new cell with other cell or set of cells
-
-// Decoding the maze
-// Starting with 'completed' set of cells, determine each axis of motion
-// I.E check both positions of X axis and get their integer. Check final set for those integers. If found, there is no wall between the cells.
-// Print cell bits to file as generated, once done with whole set file will be complete
-
-
-// Alternative method: 
-// Disjoint Set of 'cell' objects
-// when doing unions, adjust 'bits' variable to ensure correct 'walls'
-// Ignore unions after all 'cells' in one set, simply print all cells 'bits' in order
-
-
 import java.lang.Math;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
@@ -34,81 +14,39 @@ public class Main {
 		// Determine how many cells the array holds
 	    int MAXSET = (int) Math.pow(mazeSize, 4);
 	    //System.out.println(MAXSET);
-	    
-		// Create 4d Array of cells to hold cell objects
-		Cell maze[][][][] = populateStart(mazeSize);
-		
+
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
-		
-		
-		boolean complete = false;		
-		while(!complete) {
-			// Grab the first set's parent to compare to others
-			int holder = mazeSet.findParent(0);
+	
+		boolean flag = false;
+		while(!flag) {
 			
-			// Boolean flag to mark whether all elements are part of the same set
-			boolean flag = true;
-			// Loop through all parents, ensuring sameness (all cells are reachable)
+			// Checking for end condition
+			int set = mazeSet.findParent(0);
+			boolean check = true;
+			
 			for(int i = 0; i < MAXSET; i++) {
-				// Cells not in the same set found, loop needs to continue
-				if(holder != mazeSet.findParent(i)) {
-					flag = false;
+				if(mazeSet.findParent(i) != set) {
+					// Not all one set, continue breaking walls
+					check = false;
 					break;
 				}
 			}
-			// If all cells are in the set, loop will end
-			if(flag) {
-				System.out.println("Flag flipped, loop ending");
-				complete = true;
+			if(check) {
+				flag = true;
 			}
+			// end checking for end condition
 			
-			// Select a cell by coordinates
-			int selectedCoords[] = selectCell(mazeSize - 1);
-
-			// Find a neighbor cell from selection
-			int neighborCoords[] = findValidNeighbor(selectedCoords, mazeSize - 1);
-	
-			//Grab ID values of selected cell
-			int selectedID = maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].getID();
-			int neighborID = maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].getID();
-						
-			// Checks to see if these cells are a valid union
-			if(!(mazeSet.unionSets(selectedID, neighborID))) {
-				// Invalid, do not complete this merge and smash
-			}
-			else {
-				// Valid, smash walls
-				
-				for(int i = 0; i < 4; i++) {
-					// Find axis of walls
-					if(selectedCoords[i] != neighborCoords[i]) {
-						// Get bit position of this axis
-						int axisroot = i * 2;
-						
-						
-						if(selectedCoords[i] > neighborCoords[i]) {
-							// Neighbor is down one in same axis, bust negative for selected
-							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot);
-							// Neighbors wall is positive
-							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot + 1);
-						}
-						else {
-							// Neighbor is up one on same axis, bust positive
-							maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].smashWall(axisroot + 1);
-							// Neighbors wall is negative
-							maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].smashWall(axisroot);
-						}
-					}
-				}
-			}
-			//System.out.println("Neighbor ID = " + neighborID);
-			//System.out.println("Parent of selected = " + mazeSet.findParent(selectedID));
-			//System.out.println(maze[selectedCoords[0]][selectedCoords[1]][selectedCoords[2]][selectedCoords[3]].toString());
-			//System.out.println(maze[neighborCoords[0]][neighborCoords[1]][neighborCoords[2]][neighborCoords[3]].toString());
+			// Find a random cell
+			
+			
+			
 			
 		}
+
+		
+		
 		// Decode
 		try {
 			File output = new File("maze.txt");
@@ -120,16 +58,7 @@ public class Main {
 			}
 			
 			FileWriter writer = new FileWriter(output);
-			
-			for(int x = 0; x < mazeSize; x++) {
-				for(int y = 0; y < mazeSize; y++) {
-					for(int z = 0; z < mazeSize; z++) {
-						for(int t = 0; t < mazeSize; t++) {
-							writer.write(maze[x][y][z][t].toString());
-						}
-					}
-				}
-			}
+
 			writer.close();
 			
 		}

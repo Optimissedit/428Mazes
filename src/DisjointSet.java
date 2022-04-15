@@ -4,23 +4,23 @@
 public class DisjointSet {
 	
 	// Array to hold parent of sets
-	int[] parent;
+	Cell[] cellList;
 	// Number of cells in the maze
-	int cells;
+	int numCells;
 	
 	// Constructor
 	public DisjointSet(int c) {
-		cells = c;
-		parent = new int [c];
+		numCells = c;
+		cellList = new Cell [c];
 		// Call function to fill indexes with corresponding values (index[0] = 0... etc)
 		makeSets();
 	}
 	
 	// Function to make singleton sets for all cells in the maze
 	void makeSets() {
-		for(int i = 0; i < cells; i++) {
+		for(int i = 0; i < numCells; i++) {
 			// Fills the parent array with integers ascending from 0 that serve as root to trees
-			parent[i] = i;
+			cellList[i] = new Cell();
 		}
 	}
 	
@@ -28,24 +28,24 @@ public class DisjointSet {
 	int findParent(int c) {
 		
 		// Given integer is parent of itself
-		if(parent[c] == c) {
+		if(cellList[c].getParent() == c) {
 			return c;
 		}
 		else
 		{
 			//System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
 			// Given integer is not the parent, recursively check c's parent until found
-			return findParent(parent[c]);
+			return findParent(cellList[c].getParent());
 		}
 	}
 	
 	
 	// Unions two sets into a new subset
-	boolean unionSets(int c0, int c1) {
+	boolean unionSets(int i0, int i1) {
 		
 		// find parent of each set
-		int parent0 = findParent(c0);
-		int parent1 = findParent(c1);
+		int parent0 = findParent(i0);
+		int parent1 = findParent(i1);
 		
 		if(parent0 == parent1) {
 			// Both sets are already the same, no need to union
@@ -53,10 +53,27 @@ public class DisjointSet {
 		}
 		else {
 			// Set parent of c0 to parent of c1 to move sets under same parent
-			parent[parent0] = parent1;
+			cellList[parent0].setParent(parent1);
 			return true;
 		}
 
+	}
+	
+	// Method to return all cells and their parents in a list
+	public String toString() {
+		String result = "";
+		for(int i = 0; i < cellList.length; i++) {
+			result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+		}
+		return result;
+	}
+	// Method to return t cells starting from 0 as string
+	public String toString(int t) {
+		String result = "";
+		for(int i = 0; i < t; i++) {
+			result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+		}
+		return result;
 	}
 	
 }
