@@ -16,6 +16,8 @@ public class DisjointSet {
 		makeSets();
 	}
 	
+	
+	
 	// Function to make singleton sets for all cells in the maze
 	void makeSets() {
 		for(int i = 0; i < numCells; i++) {

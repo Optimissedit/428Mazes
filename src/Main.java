@@ -3,6 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 public class Main {
 
@@ -18,6 +19,7 @@ public class Main {
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
+		//System.out.println(mazeSet);
 	
 		boolean flag = false;
 		while(!flag) {
@@ -39,14 +41,34 @@ public class Main {
 			// end checking for end condition
 			
 			// Find a random cell
+			Random rand = new Random();
+			int index = rand.nextInt(MAXSET);
 			
+			// Grab all its neighbors
+			int[] neighbors = findNeighbors(index, mazeSize);
 			
+			// Select a valid neighbor to merge current index with
 			
+			int neighborIndex;
+			boolean valid = false;
 			
+			while(!valid) {
+				
+				int cell = rand.nextInt(8);
+				
+				if(neighbors[cell] >= 0) {
+					neighborIndex = neighbors[cell];
+					valid = true;
+				}
+			}
+			
+			// Try to merge selected cell and its neighbor
+			
+		
+		
 		}
+		
 
-		
-		
 		// Decode
 		try {
 			File output = new File("maze.txt");
@@ -83,33 +105,23 @@ public class Main {
 	}
 	
 	// Function to randomly select a valid neighbor given a current position
-	public static int[] findValidNeighbor(int selectedCoords[], int max) {
-		int index = ThreadLocalRandom.current().nextInt(0, 3+1);
-		// Create a new array to avoid changing selected coord value
-		int[] coords = new int[selectedCoords.length];
-		// Populate new array with old elements
-		for(int i = 0; i < coords.length; i++) {
-			coords[i] = selectedCoords[i];
-		}
-		// Ensure no out of bounds
-		if(coords[index] - 1 < 0 || coords[index] + 1 > max - 1) {
-			// An operation will be out of bounds. Attempt the opposite
-			if(!(coords[index] - 1 < 0)) {
-				// Able to subtract
-				coords[index] = coords[index] - 1;
-				return coords;
-			}
-			else {
-				// Since subtracting is invalid, addition must be possible
-				coords[index] = coords[index] + 1;
-				return coords;
-			}
-		}
-		else {
-			// Add or subtract 1 to the coordinates to grab a neighbors coords
-			coords[index] = coords[index] + coinFlip();
-			return coords;
-		}
+	public static int[] findNeighbors(int index, int N) {
+		
+		int[] result = new int[8];
+		// X neighbors
+		result[0] = index - 1;
+		result[1] = index + 1;
+		// Y Neighbors
+		result[2] = index - N;
+		result[3] = index + N;
+		// Z neighbors
+		result[4] = index - (N*N);
+		result[5] = index + (N*N);
+		// T Neighbors
+		result[6] = index - (N*N*N);
+		result[7] = index + (N*N*N);
+		
+		return result;
 		
 	}
 	
@@ -124,29 +136,6 @@ public class Main {
 		}
 	}
 	
-	// Function to return a 4d array where each cell contains a unique integer (increasing from 0)
-	public static Cell[][][][] populateStart(int size) {
-
-		// Create the 4d array
-		Cell maze[][][][] = new Cell[size][size][size][size];
-		
-		// [t][z][y][x] Coords, starting with t
-		for(int x = 0; x < size; x++) {
-			// Time loop
-			for(int y = 0; y < size;  y++) {
-				// Z coord loop
-				for(int z = 0; z < size; z++) {
-					// Y coord loop
-					for(int t = 0; t < size; t++) {
-						// Assign current cell a counter value
-						maze[x][y][z][t] = new Cell();
-					}
-				}
-			}
-		}
-		
-		return maze;
-		
-	}
+	
 
 }
