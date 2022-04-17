@@ -3,7 +3,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Random;
+import java.util.Stack;
 
 public class Main {
 
@@ -20,56 +22,80 @@ public class Main {
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
 		//System.out.println(mazeSet);
-	
+		
+		
+		Stack<Integer> indices = new Stack<>();
+		for(int i = 0; i < MAXSET; i++) {
+			indices.push(i);
+		}
+		
+		Collections.shuffle(indices);
+		
+		int runs = 0;
 		boolean flag = false;
 		while(!flag) {
 			
-			// Checking for end condition
-			int set = mazeSet.findParent(0);
-			boolean check = true;
-			
-			for(int i = 0; i < MAXSET; i++) {
-				if(mazeSet.findParent(i) != set) {
-					// Not all one set, continue breaking walls
-					check = false;
-					break;
+			if(runs > 750000) {
+				System.out.println("Checking for end");
+				// Checking for end condition
+				int set = mazeSet.findParent(0);
+				boolean check = true;
+				
+				for(int i = 0; i < MAXSET; i++) {
+					if(mazeSet.findParent(i) != set) {
+						// Not all one set, continue breaking walls
+						check = false;
+						break;
+					}
 				}
+				if(check) {
+					flag = true;
+				}
+				// end checking for end condition
 			}
-			if(check) {
-				flag = true;
-			}
-			// end checking for end condition
+
 			
 			// Find a random cell
-			Random rand = new Random();
-			int index = rand.nextInt(MAXSET);
+			int index = indices.pop();
 			
 			// Grab all its neighbors
 			int[] neighbors = findNeighbors(index, mazeSize);
 			
 			// Select a valid neighbor to merge current index with
 			
-			int neighborIndex;
+			int neighborIndex = -1;
+			Random rand = new Random();
 			boolean valid = false;
 			
 			while(!valid) {
 				
 				int cell = rand.nextInt(8);
 				
-				if(neighbors[cell] >= 0) {
+				if(neighbors[cell] >= 0 && neighbors[cell] < MAXSET) {
 					neighborIndex = neighbors[cell];
 					valid = true;
 				}
 			}
 			
 			// Try to merge selected cell and its neighbor
+			if(mazeSet.unionSets(index, neighborIndex)) {
+				// Successful merge, update cell info
+				mazeSet.cellList[index].addConnection(neighborIndex);
+				mazeSet.cellList[neighborIndex].addConnection(index);
+				// TODO: Modify walls here?
+			}
 			
-			
+			// Refill list of indices if maze isn't complete
+			if(indices.empty()) {
+				refill(indices, MAXSET);
+			}
 		
-		
+			runs++;
 		}
+		//System.out.println("Completed maze creation!\n" + mazeSet.toString());
+		//TODO: Algo works well enough, translate into output!
 		
-
+		
 		// Decode
 		try {
 			File output = new File("maze.txt");
@@ -90,6 +116,17 @@ public class Main {
 			err.printStackTrace();
 		}
  		
+	}
+	
+	// method to refill indices in a random order
+	public static void refill(Stack<Integer> x, int max) {
+		x.clear();
+		
+		for(int i = 0; i < max; i++) {
+			x.push(i);
+		}
+		
+		Collections.shuffle(x);
 	}
 	
 	// Function to select a random set of coordinates to any cell

@@ -65,7 +65,12 @@ public class DisjointSet {
 	public String toString() {
 		String result = "";
 		for(int i = 0; i < cellList.length; i++) {
-			result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+			if(cellList[i].getID() == cellList[i].getParent()) {
+				result += "Cell " + cellList[i].getID() + " parents itself!" + "\n";
+			}
+			else {
+				result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+			}
 		}
 		return result;
 	}
@@ -73,7 +78,14 @@ public class DisjointSet {
 	public String toString(int t) {
 		String result = "";
 		for(int i = 0; i < t; i++) {
-			result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+			
+			if(cellList[i].getID() == cellList[i].getParent()) {
+				result += "Cell " + cellList[i].getID() + " parents itself!" + "\n";
+			}
+			else {
+				result += "Cell " + cellList[i].getID() + " has parent " + cellList[i].getParent() + "\n";
+			}
+
 		}
 		return result;
 	}
