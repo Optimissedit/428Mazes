@@ -105,9 +105,48 @@ public class Main {
 			else {
 				// File already exists, do nothing
 			}
-			
+			// [(-x, x), (-y, y), (-z, z), (-t, t)]
 			FileWriter writer = new FileWriter(output);
+			for(int x = 0; x < mazeSize; x++) {
+				
+				for(int y = 0; y < mazeSize; y++) {
+					
+					for(int z = 0; z < mazeSize; z++) {
+						
+						for(int t = 0; t < mazeSize; t++) {
+							// Get coordinates from loops as an array
+							int[] pos = {x,y,z,t};
+							int result = mazeSet.findCell(pos, mazeSize);
 
+							int[] neighbors = findNeighbors(result, mazeSize);
+							
+							int total = 0;
+							
+							for(int i = 0; i < neighbors.length; i++) {
+								
+								if(mazeSet.cellList[result].connectedCells.contains(neighbors[i])) {
+									if(i == 0 || i == 1) {
+										total += neighbors[i];
+									}
+									else if(i == 2 || i == 3) {
+										total += neighbors[i] * mazeSize;
+									}
+									else if(i==4 || i ==5) {
+										total += neighbors[i] * mazeSize * mazeSize;
+									}
+									else if(i==6||i==7) {
+										total += neighbors[i] * mazeSize * mazeSize * mazeSize;
+									}
+										
+										
+								}
+							}
+							
+							writer.write(total);
+						}
+					}
+				}
+			}
 			writer.close();
 			
 		}
@@ -141,7 +180,7 @@ public class Main {
 		// Return filled array to be used as coordinates
 		return arr;
 	}
-	
+	// [(-x, x), (-y, y), (-z, z), (-t, t)]
 	// Function to randomly select a valid neighbor given a current position
 	public static int[] findNeighbors(int index, int N) {
 		
