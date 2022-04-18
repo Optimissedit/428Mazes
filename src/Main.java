@@ -118,31 +118,25 @@ public class Main {
 							int[] pos = {x,y,z,t};
 							int result = mazeSet.findCell(pos, mazeSize);
 							
+							//    0  1    2   3    4   5    6   7
+							// [(-x, x), (-y, y), (-z, z), (-t, t)]
 							int[] neighbors = findNeighbors(result, mazeSize);
 							
-							int total = 0;
+							char[] bin = {'1','1','1','1','1','1','1','1'};
 							
+							//System.out.print("Cell " + result + " has neighbors:\n");
 							for(int i = 0; i < neighbors.length; i++) {
 								
 								if(mazeSet.cellList[result].connectedCells.contains(neighbors[i])) {
-									if(i == 0 || i == 1) {
-										total += neighbors[i];
-									}
-									else if(i == 2 || i == 3) {
-										total += neighbors[i] * mazeSize;
-									}
-									else if(i==4 || i ==5) {
-										total += neighbors[i] * mazeSize * mazeSize;
-									}
-									else if(i==6||i==7) {
-										total += neighbors[i] * mazeSize * mazeSize * mazeSize;
-									}
-										
-										
+									bin[i] = '0';
+									//System.out.print(neighbors[i] + ", \n");
+									
 								}
+								
 							}
-							
-							writer.write(total);
+							String ans = new String(bin);
+							//System.out.println("Cell " + result + " has bits " + ans);
+							writer.write(Integer.parseInt(ans, 2));
 						}
 					}
 				}
