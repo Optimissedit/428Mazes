@@ -34,9 +34,9 @@ public class Main {
 		int runs = 0;
 		boolean flag = false;
 		while(!flag) {
-			
-			if(runs > 750000) {
-				System.out.println("Checking for end");
+			//System.out.println(runs);
+			if(runs > 750000 && runs % 5000 == 0) {
+				//System.out.println("Checking for end");
 				// Checking for end condition
 				int set = mazeSet.findParent(0);
 				boolean check = true;
@@ -117,7 +117,7 @@ public class Main {
 							// Get coordinates from loops as an array
 							int[] pos = {x,y,z,t};
 							int result = mazeSet.findCell(pos, mazeSize);
-
+							
 							int[] neighbors = findNeighbors(result, mazeSize);
 							
 							int total = 0;

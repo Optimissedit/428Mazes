@@ -5,12 +5,15 @@ public class DisjointSet {
 	
 	// Array to hold parent of sets
 	Cell[] cellList;
+	
+	int[] rank;
 	// Number of cells in the maze
 	int numCells;
 	
 	// Constructor
 	public DisjointSet(int c) {
 		numCells = c;
+		rank = new int[c];
 		cellList = new Cell [c];
 		// Call function to fill indexes with corresponding values (index[0] = 0... etc)
 		makeSets();
@@ -23,6 +26,7 @@ public class DisjointSet {
 		for(int i = 0; i < numCells; i++) {
 			// Fills the parent array with integers ascending from 0 that serve as root to trees
 			cellList[i] = new Cell();
+			rank[i] = 0;
 		}
 	}
 	
@@ -41,9 +45,11 @@ public class DisjointSet {
 		}
 		else
 		{
-			//System.out.println("Test: INT " + parent[c] + " is not parent of " + c + ", recalling function.");
-			// Given integer is not the parent, recursively check c's parent until found
-			return findParent(cellList[c].getParent());
+			int find = findParent(cellList[c].getParent());
+			
+			cellList[c].parent = find;
+			
+			return find;
 		}
 	}
 	
@@ -59,9 +65,19 @@ public class DisjointSet {
 			// Both sets are already the same, no need to union
 			return false;
 		}
-		else {
-			// Set parent of c0 to parent of c1 to move sets under same parent
+		if(rank[parent0] < rank[parent1]) {
 			cellList[parent0].setParent(parent1);
+			return true;
+		}
+		else if(rank[parent0] > rank[parent1]) {
+			cellList[parent1].setParent(parent0);
+			return true;
+		}	
+		else {
+			
+			cellList[parent1].setParent(parent0);
+			
+			rank[parent0] = rank[parent0] + 1;
 			return true;
 		}
 
