@@ -22,8 +22,9 @@ public class Main {
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
 		
 		//System.out.println(mazeSet);
+		int[] fart = findNeighbors(3, 20);
 		
-		
+
 		Stack<Integer> indices = new Stack<>();
 		for(int i = 0; i < MAXSET; i++) {
 			indices.push(i);
@@ -79,6 +80,7 @@ public class Main {
 			
 			// Try to merge selected cell and its neighbor
 			if(mazeSet.unionSets(index, neighborIndex)) {
+				
 				// Successful merge, update cell info
 				mazeSet.cellList[index].addConnection(neighborIndex);
 				mazeSet.cellList[neighborIndex].addConnection(index);
@@ -95,7 +97,7 @@ public class Main {
 		//System.out.println("Completed maze creation!\n" + mazeSet.toString());
 		//TODO: Algo works well enough, translate into output!
 		
-		
+
 		// Decode
 		try {
 			File output = new File("maze.txt");
@@ -115,6 +117,7 @@ public class Main {
 						
 						for(int t = 0; t < mazeSize; t++) {
 							// Get coordinates from loops as an array
+							//int[] pos = {x,y,z,t};
 							int[] pos = {x,y,z,t};
 							int result = mazeSet.findCell(pos, mazeSize);
 							
@@ -123,6 +126,7 @@ public class Main {
 							int[] neighbors = findNeighbors(result, mazeSize);
 							
 							char[] bin = {'1','1','1','1','1','1','1','1'};
+							int count = 0;
 							
 							//System.out.print("Cell " + result + " has neighbors:\n");
 							for(int i = 0; i < neighbors.length; i++) {
@@ -130,12 +134,26 @@ public class Main {
 								if(mazeSet.cellList[result].connectedCells.contains(neighbors[i])) {
 									bin[i] = '0';
 									//System.out.print(neighbors[i] + ", \n");
-									
+									count++;
 								}
 								
 							}
+							
+							String nei = "";
+							for(int i = 0; i < 8; i++) {
+								nei += neighbors[i];
+								nei += " ";
+							}
+							
 							String ans = new String(bin);
+							
+							
 							//System.out.println("Cell " + result + " has bits " + ans);
+							//System.out.println("       & neighbors " + mazeSet.cellList[result].connectedCells);
+				
+							//String ans = new String(bin);
+			
+							
 							writer.write(Integer.parseInt(ans, 2));
 						}
 					}
