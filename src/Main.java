@@ -1,8 +1,10 @@
 import java.lang.Math;
 import java.util.concurrent.ThreadLocalRandom;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
@@ -108,7 +110,7 @@ public class Main {
 				// File already exists, do nothing
 			}
 			// [(-x, x), (-y, y), (-z, z), (-t, t)]
-			FileWriter writer = new FileWriter(output);
+			OutputStream writer = new FileOutputStream(output);
 			for(int x = 0; x < mazeSize; x++) {
 				
 				for(int y = 0; y < mazeSize; y++) {
@@ -198,17 +200,17 @@ public class Main {
 		
 		int[] result = new int[8];
 		// X neighbors
-		result[0] = index - 1;
-		result[1] = index + 1;
+		result[6] = index - 1;
+		result[7] = index + 1;
 		// Y Neighbors
-		result[2] = index - N;
-		result[3] = index + N;
+		result[4] = index - N;
+		result[5] = index + N;
 		// Z neighbors
-		result[4] = index - (N*N);
-		result[5] = index + (N*N);
+		result[2] = index - (N*N);
+		result[3] = index + (N*N);
 		// T Neighbors
-		result[6] = index - (N*N*N);
-		result[7] = index + (N*N*N);
+		result[0] = index - (N*N*N);
+		result[1] = index + (N*N*N);
 		
 		return result;
 		

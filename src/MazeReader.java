@@ -19,7 +19,7 @@ public class MazeReader {
 		
 		try {
 			
-			File maze = new File("mazet.txt");
+			File maze = new File("maze.txt");
 			File output = new File("mazeresults.txt");
 			
 			InputStream in = new FileInputStream(maze);
@@ -69,7 +69,7 @@ public class MazeReader {
 			e.getMessage();
 		}
 		
-		int[] x = findNeighbors(24000, mazeSize);
+		int[] x = findNeighbors(3, mazeSize);
 		for(int i = 0; i < 8; i++) {
 			System.out.println(x[i]);
 		}
@@ -80,17 +80,17 @@ public class MazeReader {
 		
 		int[] result = new int[8];
 		// X neighbors
-		result[0] = index - 1;
-		result[1] = index + 1;
+		result[6] = index - 1;
+		result[7] = index + 1;
 		// Y Neighbors
-		result[2] = index - N;
-		result[3] = index + N;
+		result[4] = index - N;
+		result[5] = index + N;
 		// Z neighbors
-		result[4] = index - (N*N);
-		result[5] = index + (N*N);
+		result[2] = index - (N*N);
+		result[3] = index + (N*N);
 		// T Neighbors
-		result[6] = index - (N*N*N);
-		result[7] = index + (N*N*N);
+		result[0] = index - (N*N*N);
+		result[1] = index + (N*N*N);
 		
 		return result;
 		

@@ -32,7 +32,7 @@ public class DisjointSet {
 	
 	int findCell(int[] x, int mazeSize) {
 		// Index can be found with x(N^0) + y(N^1) + z(N^2) + t(N^3)
-		int result = x[0] + (x[1] * mazeSize) + (x[2] * (int) Math.pow(mazeSize, 2)) + (x[3] * (int) Math.pow(mazeSize, 3));
+		int result = x[3] + (x[2] * mazeSize) + (x[1] * (int) Math.pow(mazeSize, 2)) + (x[0] * (int) Math.pow(mazeSize, 3));
 		return result;
 	}
 	
