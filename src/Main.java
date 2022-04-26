@@ -22,8 +22,7 @@ public class Main {
 
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
-		System.out.println("args=" + args[0]);
-		System.out.println("maxset=" + MAXSET);
+
 		
 
 		Stack<Integer> indices = new Stack<>();
@@ -60,6 +59,8 @@ public class Main {
 			// Find a random cell
 			int index = indices.pop();
 			
+			int[] currCoords = getCoords(index, mazeSize);
+			
 			// Grab all its neighbors
 			int[] neighbors = findNeighbors(index, mazeSize);
 
@@ -74,8 +75,54 @@ public class Main {
 			while(!valid) {
 				
 				int cell = rand.nextInt(8);
+				boolean ok = false;
 				
-				if(neighbors[cell] >= 0 && neighbors[cell] < MAXSET) {
+				switch(cell) {
+				case 0:
+					if(currCoords[0] > 0) {
+						ok = true;
+					}
+					break;
+				case 1:
+					if(currCoords[0] < mazeSize - 1) {
+						ok = true;
+					}
+					break;
+				case 2:
+					if(currCoords[1] > 0) {
+						ok = true;
+					}
+					break;
+				case 3:
+					if(currCoords[1] < mazeSize - 1) {
+						ok = true;
+					}
+					break;
+				case 4:
+					if(currCoords[2] > 0) {
+						ok = true;
+					}
+					break;
+				case 5:
+					if(currCoords[2] < mazeSize - 1) {
+						ok = true;
+					}
+					break;
+				case 6:
+					if(currCoords[3] > 0) {
+						ok = true;
+					}
+					break;
+				case 7:
+					if(currCoords[3] < mazeSize - 1) {
+						ok = true;
+					}
+					break;
+				default:
+					break;
+				}
+				
+				if(ok) {
 					neighborIndex = neighbors[cell];
 					valid = true;
 				}
@@ -216,6 +263,27 @@ public class Main {
 		
 		return result;
 		
+	}
+	
+	// Function that gets a coordinate from index
+	public static int[] getCoords(int index, int N) {
+		int xParam = N * N * N;
+		
+		int yParam = N * N;
+		
+		int zParam = N;
+		
+		int x = index / xParam;
+		int remainder = index % xParam;
+		int y = remainder / yParam;
+		remainder = remainder % yParam;
+		int z = remainder / zParam;
+		remainder = remainder % zParam;
+		int t = remainder / 1;
+		remainder = remainder % 1;
+		
+		int[] pos = {x,y,z,t};
+		return pos;
 	}
 	
 	// Public to determine whether 

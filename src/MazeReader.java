@@ -39,7 +39,7 @@ public class MazeReader {
 							
 							int[] pos = {x,y,z,t};
 							
-							String position = "" + pos[0] + pos[1] + pos[2] + pos[3];
+							String position = "" + pos[0] + "," + pos[1] + "," + pos[2] + "," + pos[3];
 							int index = findCell(pos,mazeSize);
 							
 							Integer cell = in.read();
@@ -93,6 +93,8 @@ public class MazeReader {
 		return result;
 		
 	}
+
+	
 	static int findCell(int[] x, int mazeSize) {
 		// Index can be found with x(N^0) + y(N^1) + z(N^2) + t(N^3)
 		int result = x[0] + (x[1] * mazeSize) + (x[2] * (int) Math.pow(mazeSize, 2)) + (x[3] * (int) Math.pow(mazeSize, 3));
