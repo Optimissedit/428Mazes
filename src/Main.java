@@ -22,9 +22,8 @@ public class Main {
 
 		// Creates a disjoint set data structure to allow easy merging of cells by ID
 		DisjointSet mazeSet = new DisjointSet(MAXSET);
-		
-		//System.out.println(mazeSet);
-		int[] fart = findNeighbors(3, 20);
+		System.out.println("args=" + args[0]);
+		System.out.println("maxset=" + MAXSET);
 		
 
 		Stack<Integer> indices = new Stack<>();
@@ -38,7 +37,7 @@ public class Main {
 		boolean flag = false;
 		while(!flag) {
 			//System.out.println(runs);
-			if(runs > 750000 && runs % 5000 == 0) {
+			if(runs > 75000 && runs % 5000 == 0) {
 				//System.out.println("Checking for end");
 				// Checking for end condition
 				int set = mazeSet.findParent(0);
@@ -63,13 +62,15 @@ public class Main {
 			
 			// Grab all its neighbors
 			int[] neighbors = findNeighbors(index, mazeSize);
+
 			
-			// Select a valid neighbor to merge current index with
-			
+			// Select a valid neighbor to merge current index with	
 			int neighborIndex = -1;
 			Random rand = new Random();
 			boolean valid = false;
 			
+			//TODO: Add method to get coordinates before neighbor checking?
+			// Allows us to check if +- on an axis will put us outside
 			while(!valid) {
 				
 				int cell = rand.nextInt(8);
@@ -194,21 +195,22 @@ public class Main {
 		// Return filled array to be used as coordinates
 		return arr;
 	}
+	//   0   1     2  3     4  5    6   7
 	// [(-x, x), (-y, y), (-z, z), (-t, t)]
 	// Function to randomly select a valid neighbor given a current position
 	public static int[] findNeighbors(int index, int N) {
 		
 		int[] result = new int[8];
-		// X neighbors
+		// t neighbors
 		result[6] = index - 1;
 		result[7] = index + 1;
-		// Y Neighbors
+		// z Neighbors
 		result[4] = index - N;
 		result[5] = index + N;
-		// Z neighbors
+		// y neighbors
 		result[2] = index - (N*N);
 		result[3] = index + (N*N);
-		// T Neighbors
+		// x Neighbors
 		result[0] = index - (N*N*N);
 		result[1] = index + (N*N*N);
 		

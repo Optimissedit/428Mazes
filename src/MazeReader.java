@@ -39,6 +39,7 @@ public class MazeReader {
 							
 							int[] pos = {x,y,z,t};
 							
+							String position = "" + pos[0] + pos[1] + pos[2] + pos[3];
 							int index = findCell(pos,mazeSize);
 							
 							Integer cell = in.read();
@@ -49,8 +50,8 @@ public class MazeReader {
 								result = "0"+result;
 							}
 							
-							String write = "Cell" + "(" + counter + ") " + index + ": " + result + "\n";
-							//System.out.println(write);
+							String write = "Cell " + position + " (" + counter + "): " + result + "\n";
+							System.out.println(write);
 							
 							out.write(write.getBytes());
 							
@@ -69,10 +70,7 @@ public class MazeReader {
 			e.getMessage();
 		}
 		
-		int[] x = findNeighbors(3, mazeSize);
-		for(int i = 0; i < 8; i++) {
-			System.out.println(x[i]);
-		}
+
 	}
 	
 
