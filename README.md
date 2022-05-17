@@ -1,3 +1,3 @@
 # 428Mazes
  
-Program to create a 4d maze.
+TODO: Update Readme and make it look nice!
